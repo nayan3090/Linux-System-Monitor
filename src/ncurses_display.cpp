@@ -52,8 +52,8 @@ void NCursesDisplay::DisplaySystem(System& system, WINDOW* window) {
   wrefresh(window);
 }
 
-void NCursesDisplay::DisplayProcesses(std::vector<Process>& processes,
-                                      WINDOW* window, int n) {
+void NCursesDisplay::DisplayProcesses(std::vector<Process> &processes,
+                                      WINDOW *window, int n) {
   int row{0};
   int const pid_column{2};
   int const user_column{9};
@@ -69,18 +69,41 @@ void NCursesDisplay::DisplayProcesses(std::vector<Process>& processes,
   mvwprintw(window, row, time_column, "TIME+");
   mvwprintw(window, row, command_column, "COMMAND");
   wattroff(window, COLOR_PAIR(2));
-  int const num_processes = int(processes.size()) > n ? n : processes.size();
-  for (int i = 0; i < num_processes; ++i) {
-    mvwprintw(window, ++row, pid_column, to_string(processes[i].Pid()).c_str());
-    mvwprintw(window, row, user_column, processes[i].User().c_str());
+  for (int i = 0; i < n; ++i) {
+    mvwprintw(window, ++row, pid_column,
+              normalizeStringLength(to_string(processes[i].Pid()), 7).c_str());
+    mvwprintw(window, row, user_column,
+              normalizeStringLength(processes[i].User(), 7).c_str());
     float cpu = processes[i].CpuUtilization() * 100;
-    mvwprintw(window, row, cpu_column, to_string(cpu).substr(0, 4).c_str());
-    mvwprintw(window, row, ram_column, processes[i].Ram().c_str());
-    mvwprintw(window, row, time_column,
-              Format::ElapsedTime(processes[i].UpTime()).c_str());
+    mvwprintw(window, row, cpu_column,
+              normalizeStringLength(to_string(cpu).substr(0, 4), 10).c_str());
+    mvwprintw(window, row, ram_column,
+              normalizeStringLength(processes[i].Ram(), 9).c_str());
+    mvwprintw(
+        window, row, time_column,
+        normalizeStringLength(Format::ElapsedTime(processes[i].UpTime()), 9)
+            .c_str());
+    mvwprintw(window, row, command_column, "");
     mvwprintw(window, row, command_column,
-              processes[i].Command().substr(0, window->_maxx - 46).c_str());
+              normalizeStringLength(
+                  processes[i].Command().substr(0, window->_maxx - 46).c_str(),
+                  window->_maxx - 46)
+                  .c_str());
   }
+}
+
+std::string NCursesDisplay::normalizeStringLength(std::string s,
+                                                  std::size_t length) {
+  std::string norm = "";
+  int fillIn = static_cast<int>(length - s.length());
+  if (s.length() < length) {
+    norm = s;
+    for (int i = 0; i < fillIn; i++) {
+      norm.append(" ");
+    }
+  } else
+    return s;
+  return norm;
 }
 
 void NCursesDisplay::Display(System& system, int n) {
