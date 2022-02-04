@@ -1,6 +1,6 @@
 # CppND-System-Monitor
 
-This repo contains the code for the 'System Monitor' project which is a part of the Udacity C++ Nanodegree.
+This repository contains the code for the 'System Monitor' project which is a part of the Udacity C++ Nanodegree.
 
 The project code in this repository is based off of the starter code provided in this github repository: [CppND-System-Monitor](https://github.com/udacity/CppND-System-Monitor)
 
