@@ -1,6 +1,7 @@
 #include "processor.h"
 #include "linux_parser.h"
 #include <time.h>
+#include <iostream>
 
 // TODO: Return the aggregate CPU utilization
 float Processor::Utilization() 
@@ -9,7 +10,7 @@ float Processor::Utilization()
     int start_clock = (int)clock();
     int current_clock = (int)clock();
 
-    while (current_clock - start_clock < 500)
+    while (current_clock - start_clock < 10000)
     {
         total.push_back((float)LinuxParser::Jiffies());
         idle.push_back((float)LinuxParser::IdleJiffies());
