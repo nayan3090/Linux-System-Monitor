@@ -18,7 +18,7 @@ Process::Process(int pid)
     user_ = LinuxParser::User(pid);
     cpu_usage_ = LinuxParser::ProcessCpuUtilization(pid);
     ram_ = LinuxParser::Ram(pid);
-    uptime_ = LinuxParser::UpTime(pid);
+    uptime_ = LinuxParser::UpTime() - LinuxParser::UpTime(pid);
     command_ = LinuxParser::Command(pid);
 }
 
